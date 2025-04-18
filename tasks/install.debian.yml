@@ -112,4 +112,5 @@
     state: "{{ mongodb_pymongo_pip_version is defined | ternary('present', 'latest') }}"
     version: "{{ mongodb_pymongo_pip_version | default(omit) }}"
     executable: "{{ mongodb_pip_executable }}"
+    extra_args: --trusted-host pypi.python.org
   when: mongodb_pymongo_from_pip | bool

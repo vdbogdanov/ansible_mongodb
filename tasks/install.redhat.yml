@@ -4,6 +4,12 @@
   set_fact:
     mongodb_major_version: "{{ mongodb_version[0:3] | string  }}"
 
+- name: Disable transparent huge pages on systemd systems
+  include_tasks: disable_transparent_hugepages.yml
+  when:
+    - mongodb_disable_transparent_hugepages | bool
+    - ansible_service_mgr == "systemd"
+
 - name: Install EPEL release repository
   package:
     name: epel-release
@@ -51,4 +57,5 @@
     state: "{{ mongodb_pymongo_pip_version is defined | ternary('present', 'latest') }}"
     version: "{{ mongodb_pymongo_pip_version | default(omit) }}"
     executable: "{{ mongodb_pip_executable }}"
+    extra_args: --trusted-host pypi.python.org
   when: mongodb_pymongo_from_pip | bool
